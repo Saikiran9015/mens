@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - MENZ{% endblock %}
+{% block content %}
+<article class="product-single">
+  <div class="product-media">
+    {% if product.image_filename %}
+      <img src="{{ url_for('uploaded_file', filename=product.image_filename) }}" alt="{{ product.name }}">
+    {% elif product.image and product.image.startswith('data:') %}
+      <img src="{{ product.image }}" alt="{{ product.name }}">
+    {% else %}
+      <img src="{{ url_for('static', filename='no_image.png') }}" alt="No image">
+    {% endif %}
+  </div>
+  <div class="product-info">
+    <h1>{{ product.name }}</h1>
+    <div class="price">₹{{ product.price }}</div>
+    <p>{{ product.description }}</p>
+    <form action="{{ url_for('add_to_cart', product_id=product._id) }}" method="post">
+      <label>Size
+        <select name="size">
+          {% for s in product.sizes or ['M'] %}
+            <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Quantity <input type="number" name="qty" value="1" min="1"></label>
+      <button type="submit">Add to cart</button>
+    </form>
+  </div>
+</article>
+{% endblock %}

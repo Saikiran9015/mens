@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Banners{% endblock %}
+{% block content %}
+<h1>Manage Banners</h1>
+<form action="{{ url_for('admin_banners') }}" method="post" enctype="multipart/form-data">
+  <label>Title: <input type="text" name="title"></label>
+  <label>Link: <input type="text" name="link"></label>
+  <label>CTA: <input type="text" name="cta_text"></label>
+  <label>Image: <input id="banner-file" type="file" name="image" accept="image/*"></label>
+  <div style="margin:12px 0">
+    <img id="banner-preview" src="{{ url_for('static', filename='no_image.png') }}" alt="preview" style="max-width:100%;height:160px;object-fit:cover;border-radius:8px;display:block">
+  </div>
+  <button type="submit">Upload Banner</button>
+</form>
+
+<div style="margin-top:8px">
+  <a class="btn-main" href="{{ url_for('landing') }}">View site</a>
+</div>
+
+<h2>Existing Banners</h2>
+<ul class="admin-list">
+  {% for b in banners %}
+    <li>
+      <img src="{{ b.image_url }}" alt="banner" class="thumb">
+      <strong>{{ b.title or 'No title' }}</strong>
+      <form action="{{ url_for('admin_delete_banner', banner_id=b._id) }}" method="post" style="display:inline">
+        <button type="submit" class="danger">Delete</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
+<script>
+  const fileInput = document.getElementById('banner-file');
+  const preview = document.getElementById('banner-preview');
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const url = URL.createObjectURL(f);
+      preview.src = url;
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Posters{% endblock %}
+{% block content %}
+<h1>Upload Posters</h1>
+<form action="{{ url_for('admin_posters') }}" method="post" enctype="multipart/form-data">
+  <label>Title <input type="text" name="title"></label>
+  <label>Subtitle <input type="text" name="subtitle"></label>
+  <label>Link <input type="text" name="link"></label>
+  <label>Image <input type="file" name="image" accept="image/*"></label>
+  <button type="submit">Upload Poster</button>
+</form>
+
+<h2>Existing Posters</h2>
+<ul class="admin-list">
+  {% for p in posters %}
+    <li>
+      <img src="{{ p.image_url }}" alt="poster" class="thumb">
+      <div>{{ p.title }}</div>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

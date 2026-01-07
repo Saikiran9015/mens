@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Menz – Luxury Wear</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+    background:#0b0b0b;
+    color:#fff;
+    overflow-x:hidden;
+}
+
+/* HEADER */
+header{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    padding:25px 50px;
+}
+
+.logo{
+    font-size:30px;
+    color:#f5f200;
+    font-weight:600;
+}
+.logo1{
+    padding:6px 12px;
+    border-radius: 20px;
+    border: 1px solid #555;
+    justify-self:center;
+}
+
+/* Centered search with underline */
+.search{justify-self:center; text-align:center; position:relative}
+.search input{background:transparent;color:#ccc;border:0;outline:0;padding:6px 8px;min-width:140px;font-size:14px;text-align:center}
+.search::after{content:'';display:block;height:1px;background:#444;width:380px;margin:8px auto 0}
+
+.search input{
+    background:transparent;
+    color:#ccc;
+    border:0;
+    outline:0;
+    padding:6px 8px;
+    min-width:140px;
+    font-size:14px;
+}
+
+.shop-btn{
+    background:#f5f200;
+    color:#000;
+    padding:10px 20px;
+    border-radius:12px;
+    font-weight:600;
+}
+
+.shop-btn.fixed{
+    position:fixed;
+    right:18px;
+    top:18px;
+    z-index:40;
+    box-shadow:0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* Login button (placed near the Shop button) */
+.login-btn{
+    background:transparent;
+    color:#fff;
+    padding:8px 12px;
+    border-radius:12px;
+    border:1px solid #555;
+    font-weight:600;
+    text-decoration:none;
+    display:inline-block;
+}
+.login-btn.fixed{
+    position:fixed;
+    right:110px;
+    top:18px;
+    z-index:41;
+}
+
+/* HERO */
+.hero{
+    position:relative;
+    text-align:center;
+    padding:80px 0 40px;
+}
+
+.hero h1{
+    font-size:clamp(3rem, 9vw, 8rem);
+    margin-top:20px;
+    color:#f5f200;
+    letter-spacing:4px;
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:44px;
+    z-index:1;
+}
+
+.hero img{
+    display:block;
+    margin:20px auto 40px;
+    width:80%;
+    max-width:900px;
+    height:auto;
+    position:relative;
+    z-index:2;
+    
+}
+
+/* Page sections */
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+.section{
+    margin:40px 0 60px;
+    text-align:center;
+}
+.section .section-title{
+    color:#fff;
+    margin:30px auto 18px;
+    position:relative;
+    display:inline-block;
+}
+.section .section-title:before,.section .section-title:after{
+    content:'';display:block;height:1px;background:#444;position:absolute;top:50%;width:220px;
+}
+.section .section-title:before{right:100%;margin-right:16px}
+.section .section-title:after{left:100%;margin-left:16px}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:18px}
+.card{background:#111;overflow:hidden;border-radius:6px;position:relative}
+.card img{width:100%;display:block}
+.card .label{position:absolute;left:14px;bottom:12px;background:#2a2a2a;color:#fff;padding:10px 14px;border-radius:6px;font-weight:600}
+.card .label.yellow{background:#2b2b2b}
+
+.shoppers .card .label{left:12px;bottom:8px;background:transparent;color:#f5f200;font-size:20px;font-weight:800}
+
+.social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.social-item{position:relative;border-radius:6px;overflow:hidden}
+.social-item img{width:100%;display:block}
+.play{position:absolute;left:10px;top:10px;background:rgba(0,0,0,0.55);padding:8px;border-radius:6px}
+
+/* Follow the Path */
+.follow-path{position:relative;margin:40px 0 60px;height:260px}
+.path-svg{width:100%;height:100%;display:block}
+.path-btn{position:absolute;background:#f5f200;color:#000;padding:12px 20px;border-radius:12px;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,0.25)}
+.path-btn.one{left:6%;top:170px}
+.path-btn.two{left:42%;top:110px}
+.path-btn.three{right:8%;top:60px}
+
+/* Top Products */
+.top-products .grid{margin-top:12px}
+.product-card .label{background:linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.0));left:8px;bottom:8px;color:#f5f200}
+
+/* Contact section */
+.contact-section{background:#f5f200;color:#0b0b0b;padding:60px 0}
+.contact-inner{max-width:1100px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:start}
+.contact-item{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.contact-item .icon{background:transparent;font-size:20px}
+.contact-form input,.contact-form textarea{width:100%;padding:12px;border-radius:6px;border:0;margin-bottom:12px}
+.contact-form textarea{min-height:120px;resize:vertical}
+.contact-form .send{background:#0b0b0b;color:#f5f200;padding:12px 20px;border-radius:6px;border:0;font-weight:700}
+
+@media(max-width:900px){
+    .contact-inner{grid-template-columns:1fr}
+    .path-btn.one{left:6%;top:160px}
+    .path-btn.two{left:38%;top:100px}
+    .path-btn.three{right:6%;top:50px}
+}
+
+/* BUTTON */
+.btn-main{
+    margin-top:40px;
+    padding:15px 40px;
+    background:#f5f200;
+    color:#000;
+    border-radius:40px;
+    display:inline-block;
+    font-size:18px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.btn-main:hover{
+    transform:scale(1.05);
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+    header{padding:18px 20px;}
+    header{flex-wrap:wrap;gap:12px;}
+    .logo{font-size:24px;}
+    .hero h1{font-size:48px;}
+    .hero img{width:95%;}
+    .search input{min-width:80px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Menz</div>
+    <div class="search"><input type="search" placeholder="Search"></div>
+    <a href="login.html" class="login-btn fixed">Login</a>
+    <div class="shop-btn fixed">Shop</div>
+
+</header>
+
+<section class="hero">
+    <h1>Menz</h1>
+    <img src="watch.png" alt="Watch Product">
+    <a class="btn-main" href="#">Collections</a>
+</section>
+
+<main class="container">
+    <section class="section categories">
+        <h2 class="section-title">Categories</h2>
+        <div class="grid">
+            <div class="card">
+                <img src="watch.png" alt="Men Rings">
+                <div class="label">Men Rings <span style="margin-left:8px">→</span></div>
+            </div>
+            <div class="card">
+                <img src="watch.png" alt="Men Watches">
+                <div class="label">Men Watches <span style="margin-left:8px">→</span></div>
+            </div>
+            <div class="card">
+                <img src="watch.png" alt="Men Bracelets">
+                <div class="label">Men Bracelets <span style="margin-left:8px">→</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section shoppers">
+        <h2 class="section-title">Shoppers</h2>
+        <div class="grid">
+            <div class="card"><img src="watch.png" alt="shopper1"><div class="label yellow">MENZ</div></div>
+            <div class="card"><img src="watch.png" alt="shopper2"><div class="label yellow">MENZ</div></div>
+            <div class="card"><img src="watch.png" alt="shopper3"><div class="label yellow">MENZ</div></div>
+        </div>
+    </section>
+
+    <section class="section social-proof">
+        <h2 class="section-title">Social Proof</h2>
+        <div class="social-grid">
+            <div class="social-item"><img src="watch.png" alt="social1"><div class="play">▶</div></div>
+            <div class="social-item"><img src="watch.png" alt="social2"><div class="play">▶</div></div>
+            <div class="social-item"><img src="watch.png" alt="social3"><div class="play">▶</div></div>
+        </div>
+    </section>
+    
+    <section class="follow-path">
+        <svg class="path-svg" viewBox="0 0 1200 260" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,200 C200,80 400,260 600,140 C800,20 1000,220 1200,80" stroke="#fff" stroke-width="4" fill="none" opacity="0.18" />
+        </svg>
+        <button class="path-btn one">Shopping →</button>
+        <button class="path-btn two">Gifting →</button>
+        <button class="path-btn three">About Us →</button>
+    </section>
+
+    <section class="section top-products">
+        <h2 class="section-title">Top Products</h2>
+        <div class="grid">
+            <div class="card product-card">
+                <img src="watch.png" alt="Raybon Glasses">
+                <div class="label">Raybon Glasses <span style="margin-left:8px">→</span></div>
+            </div>
+            <div class="card product-card">
+                <img src="watch.png" alt="Casio Watches">
+                <div class="label">Casio Watches <span style="margin-left:8px">→</span></div>
+            </div>
+            <div class="card product-card">
+                <img src="watch.png" alt="Gold Rings">
+                <div class="label">Gold Rings <span style="margin-left:8px">→</span></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<section class="contact-section">
+    <div class="contact-inner">
+        <div class="contact-info">
+            <h2 style="text-align:left;font-size:36px;margin-bottom:20px">Contact Us</h2>
+            <div class="contact-item"><div class="icon">📞</div><div><strong>Call</strong><div>+91 9842614547</div></div></div>
+            <div class="contact-item"><div class="icon">✉️</div><div><strong>Email</strong><div>menz@gmail.com</div></div></div>
+            <div class="contact-item"><div class="icon">📍</div><div><strong>Location</strong><div>Hyderabad, India</div></div></div>
+        </div>
+        <div class="contact-form">
+            <input type="text" placeholder="Name">
+            <input type="email" placeholder="Email address">
+            <textarea placeholder="Message"></textarea>
+            <button class="send">SEND NOW</button>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

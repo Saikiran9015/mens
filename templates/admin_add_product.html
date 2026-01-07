@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Add Product{% endblock %}
+{% block content %}
+<h1>Add Product</h1>
+<form action="{{ url_for('admin_add_product') }}" method="post" enctype="multipart/form-data">
+  <label>Name: <input type="text" name="name" required></label>
+  <label>Price: <input type="number" name="price" required></label>
+  <label>Old Price: <input type="number" name="old_price"></label>
+  <label>Category: <input type="text" name="category"></label>
+  <label>Description: <textarea name="description"></textarea></label>
+  <label>Image: <input type="file" name="image" accept="image/*"></label>
+  <button type="submit">Create</button>
+</form>
+{% endblock %}

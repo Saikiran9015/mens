@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menz | Login</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #0b0b0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #fff;
+}
+
+.login-box {
+    background: #111;
+    width: 360px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(255,255,0,0.15);
+    text-align: center;
+}
+
+.login-box h1 {
+    color: #f5f200;
+    margin-bottom: 10px;
+}
+
+.login-box p {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 25px;
+}
+
+.input-box {
+    margin-bottom: 18px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px;
+    background: #1c1c1c;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.input-box input::placeholder {
+    color: #777;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background: #f5f200;
+    color: #000;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #e6e000;
+}
+
+.extra {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.extra a {
+    color: #f5f200;
+    text-decoration: none;
+}
+
+.footer-text {
+    margin-top: 25px;
+    font-size: 12px;
+    color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <h1>MENZ</h1>
+    <p>Welcome back! Please login</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for cat, msg in messages %}
+                        <div class="flash {{ cat }}">{{ msg }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('login') }}" method="post">
+        <div class="input-box">
+            <input name="email" type="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-box">
+            <input name="password" type="password" placeholder="Password" required>
+        </div>
+
+        <button class="login-btn">Login</button>
+    </form>
+
+    <div class="extra">
+        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+        <p><a href="#">Forgot Password?</a></p>
+    </div>
+
+    <div class="footer-text">
+        © 2026 MENZ
+    </div>
+</div>
+
+</body>
+</html>

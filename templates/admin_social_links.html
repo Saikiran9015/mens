@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Social Links{% endblock %}
+{% block content %}
+<h1>Social Links & Proof</h1>
+<form action="{{ url_for('admin_social_links') }}" method="post" enctype="multipart/form-data">
+  <label>Instagram URL: <input type="url" name="instagram_url" value="{{ social.instagram_url or '' }}"></label>
+  <label>Instagram Image: <input type="file" name="instagram_img" accept="image/*"></label>
+  <label>Facebook URL: <input type="url" name="facebook_url" value="{{ social.facebook_url or '' }}"></label>
+  <label>Facebook Image: <input type="file" name="facebook_img" accept="image/*"></label>
+  <label>Twitter URL: <input type="url" name="twitter_url" value="{{ social.twitter_url or '' }}"></label>
+  <label>Twitter Image: <input type="file" name="twitter_img" accept="image/*"></label>
+  <label>YouTube URL: <input type="url" name="youtube_url" value="{{ social.youtube_url or '' }}"></label>
+  <label>YouTube Image: <input type="file" name="youtube_img" accept="image/*"></label>
+  <button type="submit">Save</button>
+</form>
+
+<h2>Current Proofs</h2>
+<div class="social-proofs">
+  {% for key, img in images.items() %}
+    {% if img %}
+      <div class="proof">
+        <img src="{{ img }}" alt="{{ key }}">
+        <div class="label">{{ key }}</div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}MENZ{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="{{ url_for('landing') }}" class="logo">Menz</a>
+        <nav class="nav">
+            <a href="{{ url_for('landing') }}">Home</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+            {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+                <a href="{{ url_for('admin_banners') }}">Banners</a>
+                <a href="{{ url_for('admin_social_links') }}">Social</a>
+                <a href="{{ url_for('admin_products') }}">Products</a>
+            {% endif %}
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('cart') }}">Cart</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('signup') }}">Sign up</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+<main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, msg in messages %}
+            <li class="flash {{ category }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+<footer class="site-footer">
+    <div class="container">© 2026 MENZ</div>
+</footer>
+</body>
+</html>

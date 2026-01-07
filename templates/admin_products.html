@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Products{% endblock %}
+{% block content %}
+<h1>Products</h1>
+<a class="btn" href="{{ url_for('admin_add_product') }}">Add Product</a>
+<table class="admin-table">
+  <thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for p in products %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>₹{{ p.price }}</td>
+        <td>{{ p.category }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_delete_product', product_id=p._id) }}" style="display:inline">
+            <button class="danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
