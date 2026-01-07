@@ -1,0 +1,12 @@
+<form action="{{ url_for('checkout') }}" method="post" id="addressForm">
+  <div style="margin-bottom:10px"><input name="full_name" placeholder="Full name" required></div>
+  <div style="margin-bottom:10px"><input name="phone" placeholder="Phone number" required></div>
+  <div style="margin-bottom:10px"><input name="line1" placeholder="Address line 1" required></div>
+  <div style="margin-bottom:10px"><input name="line2" placeholder="Address line 2 (optional)"></div>
+  <div class="input-row" style="margin-bottom:10px">
+    <input name="city" placeholder="City" required>
+    <input name="postcode" placeholder="Pincode" required>
+  </div>
+  <div style="margin-bottom:10px"><select name="state" required><option value="">Select state</option><option>Telangana</option><option>Andhra Pradesh</option><option>Karnataka</option></select></div>
+  <div style="text-align:right"><button type="submit" class="place-order">Save address</button></div>
+</form>

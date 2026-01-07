@@ -229,36 +229,45 @@ header{
     <section class="section categories">
         <h2 class="section-title">Categories</h2>
         <div class="grid">
-            <div class="card">
-                <img src="{{ url_for('static', filename='no_image.png') }}" alt="Men Rings">
-                <div class="label">Men Rings <span style="margin-left:8px">→</span></div>
-            </div>
-            <div class="card">
-                <img src="{{ url_for('static', filename='no_image.png') }}" alt="Men Watches">
-                <div class="label">Men Watches <span style="margin-left:8px">→</span></div>
-            </div>
-            <div class="card">
-                <img src="{{ url_for('static', filename='no_image.png') }}" alt="Men Bracelets">
-                <div class="label">Men Bracelets <span style="margin-left:8px">→</span></div>
-            </div>
+            {% if categories %}
+                {% for c in categories %}
+                <div class="card">
+                    <img src="{{ c.image_url }}" alt="{{ c.name }}">
+                    <div class="label">{{ c.name }} <span style="margin-left:8px"></span></div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="card">
+                    <img src="{{ url_for('static', filename='no_image.png') }}" alt="Category">
+                    <div class="label">Category <span style="margin-left:8px">→</span></div>
+                </div>
+            {% endif %}
         </div>
     </section>
 
     <section class="section shoppers">
         <h2 class="section-title">Shoppers</h2>
         <div class="grid">
-            <div class="card"><img src="{{ url_for('static', filename='no_image.png') }}" alt="shopper1"><div class="label yellow">MENZ</div></div>
-            <div class="card"><img src="{{ url_for('static', filename='no_image.png') }}" alt="shopper2"><div class="label yellow">MENZ</div></div>
-            <div class="card"><img src="{{ url_for('static', filename='no_image.png') }}" alt="shopper3"><div class="label yellow">MENZ</div></div>
+            {% if shoppers %}
+                {% for s in shoppers %}
+                <div class="card"><img src="{{ s.image_url }}" alt="{{ s.name }}"><div class="label yellow">{{ s.name or 'MENZ' }}</div></div>
+                {% endfor %}
+            {% else %}
+                <div class="card"><img src="{{ url_for('static', filename='no_image.png') }}" alt="shopper"><div class="label yellow">MENZ</div></div>
+            {% endif %}
         </div>
     </section>
 
     <section class="section social-proof">
         <h2 class="section-title">Social Proof</h2>
         <div class="social-grid">
-            <div class="social-item"><img src="{{ url_for('static', filename='no_image.png') }}" alt="social1"><div class="play">▶</div></div>
-            <div class="social-item"><img src="{{ url_for('static', filename='no_image.png') }}" alt="social2"><div class="play">▶</div></div>
-            <div class="social-item"><img src="{{ url_for('static', filename='no_image.png') }}" alt="social3"><div class="play">▶</div></div>
+            {% if social_proofs %}
+                {% for s in social_proofs %}
+                    <div class="social-item"><img src="{{ s }}" alt="social"><div class="play">▶</div></div>
+                {% endfor %}
+            {% else %}
+                <div class="social-item"><img src="{{ url_for('static', filename='no_image.png') }}" alt="social"><div class="play">▶</div></div>
+            {% endif %}
         </div>
     </section>
 
@@ -266,9 +275,9 @@ header{
         <svg class="path-svg" viewBox="0 0 1200 260" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0,200 C200,80 400,260 600,140 C800,20 1000,220 1200,80" stroke="#fff" stroke-width="4" fill="none" opacity="0.18" />
         </svg>
-        <button class="path-btn one">Shopping →</button>
-        <button class="path-btn two">Gifting →</button>
-        <button class="path-btn three">About Us →</button>
+        <button class="path-btn one"><a href="{{ url_for('shopping') }}">Shopping →</a></button>
+        <button class="path-btn two"><a href="{{ url_for('gifting') }}">Gifting →</a></button>
+        <button class="path-btn three"><a href="{{ url_for('about') }}">About Us →</a></button>
     </section>
 
     <section class="section top-products">
@@ -281,7 +290,7 @@ header{
                 {% else %}
                     <img src="{{ url_for('static', filename='no_image.png') }}" alt="{{ p.name }}">
                 {% endif %}
-                <div class="label">{{ p.name }} <span style="margin-left:8px">→</span></div>
+                <div class="label">{{ p.name }} <span style="margin-left:8px"></span></div>
             </div>
             {% endfor %}
         </div>

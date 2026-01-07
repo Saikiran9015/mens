@@ -191,6 +191,8 @@ def logout():
 @app.route('/')
 def landing():
     products = list(products_col.find().sort('created_at', -1))
+
+    # prepare banners
     banners = []
     for b in banners_col.find().sort('created_at', -1):
         image = b.get('image_filename') or b.get('image')
@@ -201,8 +203,55 @@ def landing():
         else:
             url = url_for('static', filename='no_image.png')
         banners.append({'_id': str(b.get('_id')), 'image_url': url, 'title': b.get('title')})
+
+    # prepare categories (unique categories from products, take first image)
+    categories_map = {}
+    for p in products:
+        cat = (p.get('category') or 'Other').strip()
+        if not cat:
+            cat = 'Other'
+        if cat not in categories_map:
+            img = p.get('image_filename') or p.get('image')
+            if isinstance(img, str) and img.startswith('data:'):
+                img_url = img
+            elif isinstance(img, str):
+                img_url = url_for('uploaded_file', filename=img)
+            else:
+                img_url = url_for('static', filename='no_image.png')
+            categories_map[cat] = {'name': cat, 'image_url': img_url}
+    categories = list(categories_map.values())[:3]
+
+    # shoppers: use latest 3 products
+    shoppers = []
+    for p in products[:3]:
+        img = p.get('image_filename') or p.get('image')
+        if isinstance(img, str) and img.startswith('data:'):
+            img_url = img
+        elif isinstance(img, str):
+            img_url = url_for('uploaded_file', filename=img)
+        else:
+            img_url = url_for('static', filename='no_image.png')
+        shoppers.append({'_id': str(p.get('_id')), 'image_url': img_url, 'name': p.get('name')})
+
+    # social proofs: prefer social images, fallback to posters
+    social_imgs = []
+    s = social_col.find_one() or {}
+    for key in ['instagram_image', 'facebook_image', 'twitter_image', 'youtube_image']:
+        v = s.get(key)
+        if v:
+            social_imgs.append(url_for('uploaded_file', filename=v))
+    if not social_imgs:
+        for pst in posters_col.find().sort('created_at', -1).limit(3):
+            img = pst.get('image_filename') or pst.get('image')
+            if isinstance(img, str) and img.startswith('data:'):
+                social_imgs.append(img)
+            elif isinstance(img, str):
+                social_imgs.append(url_for('uploaded_file', filename=img))
+            else:
+                social_imgs.append(url_for('static', filename='no_image.png'))
+
     posters = list(posters_col.find().sort('created_at', -1))
-    return render_template('landing.html', products=products, banners=banners, posters=posters)
+    return render_template('landing.html', products=products, banners=banners, posters=posters, categories=categories, shoppers=shoppers, social_proofs=social_imgs)
 
 
 @app.route('/product/<product_id>')
@@ -214,7 +263,60 @@ def product_page(product_id):
     if not p:
         flash('Product not found', 'error')
         return redirect(url_for('landing'))
+    # build images list for gallery (support multiple possible fields)
+    images = []
+    # prefer list field 'images'
+    if isinstance(p.get('images'), list):
+        for im in p.get('images'):
+            if isinstance(im, str) and im.startswith('data:'):
+                images.append(im)
+            elif isinstance(im, str):
+                images.append(url_for('uploaded_file', filename=im))
+    # support 'image_filenames' list
+    if isinstance(p.get('image_filenames'), list):
+        for im in p.get('image_filenames'):
+            if im:
+                images.append(url_for('uploaded_file', filename=im))
+    # single filename
+    img = p.get('image_filename') or p.get('image')
+    if isinstance(img, str) and img.startswith('data:'):
+        images.append(img)
+    elif isinstance(img, str) and img:
+        images.append(url_for('uploaded_file', filename=img))
+    # fallback
+    if not images:
+        images.append(url_for('static', filename='no_image.png'))
+    p['_id'] = str(p.get('_id'))
+    p['images'] = images
     return render_template('product_page.html', product=p)
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@app.route('/shopping')
+def shopping():
+    q = (request.args.get('q') or '').strip()
+    if q:
+        regex = {"$regex": re.escape(q), "$options": "i"}
+        raw = list(products_col.find({"$or": [{"name": regex}, {"category": regex}]}).sort('created_at', -1))
+    else:
+        raw = list(products_col.find().sort('created_at', -1))
+    products = []
+    for p in raw:
+        p['_id'] = str(p.get('_id'))
+        products.append(p)
+    return render_template('shopping.html', products=products, q=q)
+
+
+@app.route('/gifting')
+def gifting():
+    products = list(products_col.find().sort('created_at', -1))
+    for p in products:
+        p['_id'] = str(p.get('_id'))
+    return render_template('gifting.html', products=products)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
@@ -310,7 +412,41 @@ def cart():
 # Checkout + Razorpay
 @app.route('/checkout')
 def checkout():
-    return render_template('checkout.html')
+    # Show checkout page. If product_id provided, show that product as the only item.
+    product_id = request.args.get('product_id')
+    items = []
+    subtotal = 0
+    if product_id:
+        try:
+            p = products_col.find_one({'_id': ObjectId(product_id)})
+        except Exception:
+            p = None
+        if p:
+            # normalize product for template (keep dict-like access)
+            p['_id'] = str(p.get('_id'))
+            items = [{'product': p, 'qty': 1}]
+    else:
+        # try building from cart for current user (if any)
+        user = session.get('user_id')
+        rows = []
+        if user:
+            rows = list(cart_col.find({'user_id': ObjectId(user)}))
+        else:
+            rows = list(cart_col.find().limit(0))
+        for c in rows:
+            try:
+                p = products_col.find_one({'_id': ObjectId(c.get('product_id'))})
+            except Exception:
+                p = None
+            if p:
+                p['_id'] = str(p.get('_id'))
+                items.append({'product': p, 'qty': c.get('qty', 1)})
+    for it in items:
+        try:
+            subtotal += float(it['product'].get('price', 0)) * int(it.get('qty', 1))
+        except Exception:
+            pass
+    return render_template('checkout.html', items=items, subtotal=int(subtotal))
 
 
 @app.route('/create-razorpay-order', methods=['POST'])

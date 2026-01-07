@@ -6,13 +6,210 @@
     <title>{% block title %}MENZ{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-.site-header{background:transparent;padding:18px 0;border-bottom:0}
-.header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.header-inner .logo{font-size:30px;color:#f5f200;font-weight:700}
-.nav{display:flex;gap:18px;align-items:center}
-.nav a{color:#fff;padding:8px 12px;border-radius:8px;font-weight:600}
-.nav a:hover{background:rgba(255,255,255,0.04);color:#f5f200}
-.nav a.active{color:#f5f200}
+
+
+/* ================= RESET & BASE ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0b0b0b;
+    color:#ffffff;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* ================= HEADER ================= */
+.site-header{
+    width:100%;
+    background:#0b0b0b;
+    border-bottom:1px solid #222;
+}
+
+.container{
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 16px;
+}
+
+.header-inner{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:16px;
+    padding:16px 0;
+}
+
+/* LOGO */
+.logo{
+    font-size:28px;
+    font-weight:700;
+    color:#f5f200;
+    text-decoration:none;
+    white-space:nowrap;
+}
+
+/* ================= NAV ================= */
+.nav{
+    display:flex;
+    gap:16px;
+    align-items:center;
+}
+
+.nav a{
+    color:#ffffff;
+    text-decoration:none;
+    font-weight:600;
+    padding:8px 12px;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.nav a:hover{
+    background:rgba(255,255,255,0.06);
+    color:#f5f200;
+}
+
+/* ================= SEARCH ================= */
+.search-wrapper{
+    display:flex;
+    justify-content:center;
+    width:100%;
+}
+
+#searchForm{
+    display:flex;
+    gap:10px;
+    align-items:center;
+}
+
+#searchInput{
+    width:280px;
+    padding:10px 16px;
+    border-radius:24px;
+    border:1px solid #444;
+    background:#111;
+    color:#fff;
+    font-size:14px;
+    outline:none;
+    text-align:center;
+}
+
+#searchInput:focus{
+    border-color:#f5f200;
+}
+
+#searchForm button{
+    padding:10px 22px;
+    border-radius:24px;
+    border:none;
+    background:#f5f200;
+    color:#000;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* ================= SEARCH RESULTS ================= */
+.search-results{
+    max-width:1200px;
+    margin:20px auto;
+    padding:0 16px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:20px;
+}
+
+.search-results .card{
+    background:#111;
+    border-radius:12px;
+    overflow:hidden;
+    transition:0.3s;
+}
+
+.search-results .card:hover{
+    transform:translateY(-4px);
+}
+
+.search-results img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.search-results .label{
+    padding:12px;
+    font-weight:700;
+    color:#f5f200;
+}
+
+/* ================= MOBILE (<=768px) ================= */
+@media (max-width:768px){
+
+    .header-inner{
+        grid-template-columns:1fr;
+        text-align:center;
+        gap:12px;
+    }
+
+    .logo{
+        font-size:26px;
+    }
+
+    .search-wrapper{
+        order:2;
+    }
+
+    #searchInput{
+        width:100%;
+    }
+
+    #searchForm{
+        width:100%;
+    }
+
+    #searchForm button{
+        white-space:nowrap;
+    }
+
+    .nav{
+        order:3;
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:10px;
+    }
+}
+
+/* ================= SMALL MOBILE (<=480px) ================= */
+@media (max-width:480px){
+
+    #searchForm{
+        flex-direction:column;
+    }
+
+    #searchForm button{
+        width:100%;
+    }
+
+    .nav a{
+        font-size:13px;
+        padding:6px 10px;
+    }
+}
+
+/* ================= LAPTOP (>=1024px) ================= */
+@media (min-width:1024px){
+
+    .header-inner{
+        grid-template-columns:auto 1fr auto;
+    }
+
+    #searchInput{
+        width:320px;
+    }
+}
+
     </style>
     {% block head_extra %}{% endblock %}
 </head>
@@ -20,9 +217,26 @@
 <header class="site-header">
     <div class="container header-inner">
         <a href="{{ url_for('landing') }}" class="logo">Menz</a>
+        <!-- CENTER SEARCH -->
+<div class="search-wrapper">
+    <form id="searchForm">
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search products…" 
+            autocomplete="off"
+            value="{{ q|default('') }}"
+        >
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<!-- SEARCH RESULTS -->
+<div id="searchResults" class="search-results"></div>
+
+
         <nav class="nav">
-            <a href="{{ url_for('landing') }}">Home</a>
-            
+                        
             {% if session.get('role') == 'admin' %}
                 <a href="{{ url_for('admin_dashboard') }}">Admin</a>
                 <a href="{{ url_for('admin_banners') }}">Banners</a>
@@ -55,5 +269,17 @@
 <footer class="site-footer">
     <div class="container"></div>
 </footer>
+<script>
+document.getElementById('searchForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const q = document.getElementById('searchInput').value.trim();
+    if(!q) return;
+
+    // redirect to the shopping page which accepts `q` and shows results
+    window.location.href = `/shopping?q=${encodeURIComponent(q)}`;
+});
+</script>
+
 </body>
 </html>

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}About Us — Menz{% endblock %}
+{% block head_extra %}
+<style>
+.hero{padding:60px 0;text-align:center}
+.container{max-width:1000px;margin:0 auto;padding:0 20px}
+.about-grid{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+.card{background:#111;padding:18px;border-radius:12px}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr;padding:12px}}
+</style>
+{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1 style="color:#f5f200;">About Menz</h1>
+  <p style="color:#ccc;max-width:800px;margin:12px auto">We craft premium men's accessories with attention to detail. Our mission is to bring high quality, affordable luxury to everyday style.</p>
+</section>
+<main class="container">
+  <div class="about-grid">
+    <div class="card">
+      <h2 style="color:#f5f200">Our Story</h2>
+      <p style="color:#ddd">Founded in 2024, Menz was born from a passion for refined men's accessories. We source materials responsibly and focus on durable design.</p>
+      <h3 style="color:#f5f200;margin-top:12px">Quality & Craft</h3>
+      <p style="color:#ddd">Every piece is inspected and crafted to last. We partner with skilled artisans to ensure consistency and comfort.</p>
+    </div>
+    <aside class="card">
+      <h3 style="color:#f5f200">Contact</h3>
+      <div style="color:#ddd">Email: menz@gmail.com</div>
+      <div style="color:#ddd;margin-top:8px">Phone: +91 98426 14547</div>
+    </aside>
+  </div>
+</main>
+{% endblock %}
