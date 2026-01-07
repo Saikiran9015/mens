@@ -1,0 +1,112 @@
+/* Admin Users page styles — responsive for laptop & mobile */
+
+.container.admin-users {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.section-title {
+  font-size: 28px;
+  text-align: left;
+  margin: 18px 0 24px;
+  color: #f5f200;
+}
+
+/* Form styling */
+form {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  background: #0f0f0f;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 8px;
+}
+
+.btn-main {
+  background: #f5c84a;
+  color: #0b0b0b;
+  padding: 10px 18px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+/* Table styles */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 18px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-table thead th {
+  text-align: left;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  font-weight: 600;
+  color: #ddd;
+}
+
+.admin-table tbody td {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255,255,255,0.03);
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+.admin-list img.thumb {
+  width: 120px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 12px;
+}
+
+.admin-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.01);
+  margin-bottom: 10px;
+}
+
+/* Flash messages */
+.flashes { list-style:none; margin: 12px 0; }
+.flash { padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; }
+.flash.success { background: rgba(178, 223, 143, 0.08); color: #b5e07a; }
+.flash.error { background: rgba(255, 99, 99, 0.06); color: #ff9b9b; }
+
+/* Small screens: stack layout and make table horizontally scrollable */
+@media (max-width: 900px) {
+  .section-title { font-size: 22px; }
+  .contact-inner, .admin-users-grid { display: block; }
+  form { padding: 14px; }
+  .admin-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .admin-table thead, .admin-table tbody, .admin-table tr, .admin-table th, .admin-table td { display: inline-block; vertical-align: top; }
+  .admin-table thead th { display: block; }
+  .admin-table tbody td { display: block; min-width: 220px; }
+  .admin-list img.thumb { width: 100px; height: 60px; }
+}
+
+@media (min-width: 901px) {
+  /* Desktop tweaks */
+  form { display: block; }
+  .admin-table thead th { font-size: 15px; }
+}

@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}MENZ{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+.site-header{background:transparent;padding:18px 0;border-bottom:0}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.header-inner .logo{font-size:30px;color:#f5f200;font-weight:700}
+.nav{display:flex;gap:18px;align-items:center}
+.nav a{color:#fff;padding:8px 12px;border-radius:8px;font-weight:600}
+.nav a:hover{background:rgba(255,255,255,0.04);color:#f5f200}
+.nav a.active{color:#f5f200}
+    </style>
     {% block head_extra %}{% endblock %}
 </head>
 <body>
@@ -13,7 +22,7 @@
         <a href="{{ url_for('landing') }}" class="logo">Menz</a>
         <nav class="nav">
             <a href="{{ url_for('landing') }}">Home</a>
-            <a href="{{ url_for('contact') }}">Contact</a>
+            
             {% if session.get('role') == 'admin' %}
                 <a href="{{ url_for('admin_dashboard') }}">Admin</a>
                 <a href="{{ url_for('admin_banners') }}">Banners</a>
@@ -44,7 +53,7 @@
     {% block content %}{% endblock %}
 </main>
 <footer class="site-footer">
-    <div class="container">© 2026 MENZ</div>
+    <div class="container"></div>
 </footer>
 </body>
 </html>

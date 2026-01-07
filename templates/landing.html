@@ -223,7 +223,6 @@ header{
     {% else %}
         <img src="{{ url_for('static', filename='watch.png') }}" alt="Hero">
     {% endif %}
-    <a class="btn-main" href="#">Collections</a>
 </section>
 
 <main class="container">
@@ -289,7 +288,7 @@ header{
     </section>
 </main>
 
-<section class="contact-section">
+<section class="contact">
     <div class="contact-inner">
         <div class="contact-info">
             <h2 style="text-align:left;font-size:36px;margin-bottom:20px">Contact Us</h2>
@@ -299,10 +298,10 @@ header{
         </div>
         <div class="contact-form">
             <form action="{{ url_for('contact') }}" method="post">
-                <input type="text" name="name" placeholder="Name" required>
-                <input type="email" name="email" placeholder="Email address" required>
-                <textarea name="message" placeholder="Message" required></textarea>
-                <button class="send" type="submit">SEND NOW</button>
+                <input type="text" name="name" placeholder="Name" required style="background-color: #ccc;">
+                <input type="email" name="email" placeholder="Email address" required style="background-color: #ccc;">
+                <textarea name="message" placeholder="Message" required style="background-color: #ccc;"></textarea>
+                <button class="send" type="submit" style="background-color: rgb(98, 98, 98);">SEND NOW</button>
             </form>
         </div>
     </div>

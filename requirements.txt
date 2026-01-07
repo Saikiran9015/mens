@@ -3,6 +3,6 @@ pymongo>=4.0
 python-dotenv
 pillow
 razorpay
-gridfs
+
 boto3
 requests
