@@ -1,11 +1,81 @@
 {% extends 'base.html' %}
 {% block title %}Admin Dashboard{% endblock %}
+{% block head_extra %}
+<style>
+  .admin-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px 0}
+  .admin-hero h1{font-size:28px}
+  .admin-hero .meta{color:#ccc}
+  .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:20px}
+  .admin-card{background:#111;padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.6);display:flex;flex-direction:column;gap:12px}
+  .admin-card .title{font-weight:600;color:#f5f200}
+  .admin-card .count{font-size:28px;font-weight:700}
+  .admin-card a{display:inline-block;padding:8px 12px;border-radius:8px;background:#c9a44c;color:#000;font-weight:600;text-decoration:none}
+  .admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+  @media (max-width:700px){.admin-hero{flex-direction:column;align-items:flex-start}}
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Admin Dashboard</h1>
-<div class="dashboard-grid">
-  <div class="card">Users: {{ counts.users }}</div>
-  <div class="card">Products: {{ counts.products }}</div>
-  <div class="card">Orders: {{ counts.orders }}</div>
-  <div class="card">Banners: {{ counts.banners }}</div>
+<div class="admin-hero">
+  <div>
+    <h1>Admin Dashboard</h1>
+    <div class="meta">Welcome back — manage the site and content from here.</div>
+  </div>
+  <div style="text-align:right">
+    <div style="color:#aaa">Users: <strong>{{ counts.users }}</strong></div>
+    <div style="color:#aaa">Products: <strong>{{ counts.products }}</strong></div>
+  </div>
 </div>
+
+<div class="admin-grid">
+  <div class="admin-card">
+    <div class="title">Products</div>
+    <div class="count">{{ counts.products }}</div>
+    <div class="admin-actions">
+      <a href="{{ url_for('admin_products') }}">Manage</a>
+      <a href="{{ url_for('admin_add_product') }}">Add</a>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="title">Users</div>
+    <div class="count">{{ counts.users }}</div>
+    <div class="admin-actions">
+      <a href="{{ url_for('admin_users') }}">Manage Users</a>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="title">Orders</div>
+    <div class="count">{{ counts.orders }}</div>
+    <div class="admin-actions">
+      <a href="#">View Orders</a>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="title">Banners</div>
+    <div class="count">{{ counts.banners }}</div>
+    <div class="admin-actions">
+      <a href="{{ url_for('admin_banners') }}">Manage Banners</a>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="title">Social Links</div>
+    <div class="count">&nbsp;</div>
+    <div class="admin-actions">
+      <a href="{{ url_for('admin_social_links') }}">Manage Social</a>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="title">Posters</div>
+    <div class="count">&nbsp;</div>
+    <div class="admin-actions">
+      <a href="{{ url_for('admin_banners') }}">Manage Posters</a>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
