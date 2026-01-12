@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Success — Menz{% endblock %}
+
+{% block content %}
+<div class="container" style="text-align:center; padding: 60px 20px;">
+    <div style="font-size: 64px; margin-bottom: 20px;">🎉</div>
+    <h1 style="color: var(--accent-color); font-size: 32px; margin-bottom: 16px;">Order Placed Successfully!</h1>
+    <p style="color: #ccc; font-size: 18px; margin-bottom: 32px;">
+        Thank you for shopping with us. Your order ID is <strong>{{ order_id }}</strong>.
+    </p>
+    <div>
+        <a href="{{ url_for('shopping') }}" class="map-btn" style="text-decoration:none;">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}

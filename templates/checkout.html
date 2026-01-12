@@ -1,0 +1,533 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout — MENZ{% endblock %}
+
+{% block head_extra %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+  /* Premium Checkout Styling */
+  .checkout-container {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 40px;
+    padding: 40px 0;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  /* Left Column: Form Sections */
+  .checkout-section {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 24px;
+    transition: border-color 0.3s ease;
+  }
+
+  .checkout-section:hover {
+    border-color: #333;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title span {
+    background: rgba(245, 242, 0, 0.1);
+    color: var(--accent-color);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+  }
+
+  /* Form Fields */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .form-input,
+  .form-select {
+    width: 100%;
+    background: #0b0b0b;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 15px;
+    transition: all 0.3s;
+    outline: none;
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(245, 242, 0, 0.1);
+  }
+
+  /* Payment Methods */
+  .payment-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .payment-card {
+    cursor: pointer;
+    position: relative;
+  }
+
+  .payment-card input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .payment-card-inner {
+    background: #0b0b0b;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .payment-card input:checked+.payment-card-inner {
+    border-color: var(--accent-color);
+    background: rgba(245, 242, 0, 0.05);
+  }
+
+  .payment-icon {
+    font-size: 24px;
+    color: #666;
+  }
+
+  .payment-card input:checked+.payment-card-inner .payment-icon {
+    color: var(--accent-color);
+  }
+
+  .payment-text {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* Order Summary (Right Column) */
+  .checkout-sidebar {
+    position: sticky;
+    top: 100px;
+  }
+
+  .summary-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 30px;
+  }
+
+  .summary-items {
+    margin-bottom: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .summary-item {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #222;
+  }
+
+  .summary-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .item-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #222;
+  }
+
+  .item-details {
+    flex: 1;
+  }
+
+  .item-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #fff;
+    line-height: 1.4;
+  }
+
+  .item-meta {
+    font-size: 13px;
+    color: #888;
+  }
+
+  .item-price {
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+
+  /* Totals */
+  .summary-totals {
+    border-top: 1px solid #222;
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    color: #aaa;
+    font-size: 14px;
+  }
+
+  .total-row.final {
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+    margin-top: 16px;
+    border-top: 1px solid #222;
+    padding-top: 16px;
+    align-items: center;
+  }
+
+  .total-amount {
+    color: var(--accent-color);
+    font-size: 24px;
+  }
+
+  /* Place Order Button */
+  .place-order-btn {
+    width: 100%;
+    background: var(--accent-color);
+    color: #000;
+    border: none;
+    padding: 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .place-order-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(245, 242, 0, 0.3);
+  }
+
+  @media (max-width: 900px) {
+    .checkout-container {
+      grid-template-columns: 1fr;
+      padding: 20px;
+    }
+
+    .checkout-sidebar {
+      position: static;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Use a single form for everything to ensure data integrity -->
+<form action="{{ url_for('place_order') }}" method="post" id="mainCheckoutForm">
+  <div class="container">
+    <div class="checkout-container">
+
+      <!-- LEFT COLUMN -->
+      <div class="checkout-main">
+
+        <!-- Section 1: Address -->
+        <div class="checkout-section">
+          <div class="section-title">
+            <span>1</span> Shipping Details
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="full_name" class="form-input" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" name="phone" id="phone_field" class="form-input" placeholder="10-digit mobile number"
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address (Optional)</label>
+              <input type="email" name="email" class="form-input" placeholder="For order confirmation">
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Address</label>
+              <input type="text" name="line1" class="form-input" placeholder="House No, Building, Street" required>
+              <input type="text" name="line2" class="form-input" placeholder="Area, Colony (Optional)"
+                style="margin-top: 10px;">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input type="text" name="city" class="form-input" placeholder="City text" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pincode</label>
+              <input type="text" name="postcode" class="form-input" placeholder="6-digit Pincode" required>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">State</label>
+              <select name="state" class="form-select" required>
+                <option value="" disabled selected>Select State</option>
+                <option>Telangana</option>
+                <option>Andhra Pradesh</option>
+                <option>Karnataka</option>
+                <option>Maharashtra</option>
+                <option>Tamil Nadu</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Payment -->
+        <div class="checkout-section">
+          <div class="section-title">
+            <span>2</span> Payment Method
+          </div>
+
+          <div class="payment-options">
+            <label class="payment-card">
+              <input type="radio" name="payment_method" value="cod" checked>
+              <div class="payment-card-inner">
+                <div class="payment-icon">💵</div>
+                <div class="payment-text">Cash on Delivery</div>
+              </div>
+            </label>
+
+            <label class="payment-card">
+              <input type="radio" name="payment_method" value="online">
+              <div class="payment-card-inner">
+                <div class="payment-icon">💳</div>
+                <div class="payment-text">Pay Online</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Summary -->
+      <aside class="checkout-sidebar">
+        <div class="summary-card">
+          <div class="section-title" style="margin-bottom: 20px;">Order Summary</div>
+
+          {% if items %}
+          <div class="summary-items">
+            {% for it in items %}
+            <div class="summary-item">
+              <img
+                src="{% if it.product.image_filename %}{{ url_for('uploaded_file', filename=it.product.image_filename) }}{% else %}{{ url_for('static', filename='no_image.png') }}{% endif %}"
+                alt="{{ it.product.name }}" class="item-img">
+              <div class="item-details">
+                <div class="item-name">{{ it.product.name }}</div>
+                <div class="item-meta">Qty: {{ it.qty }}{% if it.size %} | Size: {{ it.size }}{% endif %}</div>
+              </div>
+              <div class="item-price">₹{{ it.product.price|int }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p style="color: #666; font-style: italic;">No items in cart</p>
+          {% endif %}
+
+          <div class="summary-totals">
+            <div class="total-row">
+              <span>Subtotal</span>
+              <span>₹{{ subtotal }}</span>
+            </div>
+            <div class="total-row">
+              <span>Shipping</span>
+              <span style="color: var(--accent-color);">Free</span>
+            </div>
+            <div class="total-row final">
+              <span>Total</span>
+              <span class="total-amount">₹{{ subtotal }}</span>
+            </div>
+          </div>
+
+          <!-- Hidden field for amount logic -->
+          <input type="hidden" name="amount" id="order_amount" value="{{ subtotal }}">
+
+          <button type="submit" class="place-order-btn">
+            Place Order <span style="margin-left:8px">➔</span>
+          </button>
+
+          <div style="margin-top: 16px; text-align: center; font-size: 12px; color: #666;">
+            Secure Checkout - 100% Data Only Demo
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</form>
+
+<script>
+  document.getElementById('mainCheckoutForm').addEventListener('submit', async function (e) {
+    const formData = new FormData(this);
+    const method = formData.get('payment_method');
+
+    if (method === 'cod') {
+      // Let the form submit naturally to /place-order
+      return;
+    }
+
+    // If online, intercept
+    e.preventDefault();
+
+    const btn = this.querySelector('.place-order-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Processing...';
+    btn.disabled = true;
+
+    try {
+      // Check if key is available
+      const rzpKey = "{{ razorpay_key }}";
+      if (!rzpKey || rzpKey === 'None') {
+        alert("Configuration Error: Razorpay Key is missing on server. Check .env file.");
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        return;
+      }
+
+      const amountVal = document.getElementById('order_amount').value;
+      // Create Razorpay Order
+      const resp = await fetch('/create-razorpay-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: Math.round(parseFloat(amountVal) * 100), // convert to paise
+          currency: 'INR'
+        })
+      });
+      const orderData = await resp.json();
+
+      // Check for fake order ID (server fallback)
+      if (!orderData || !orderData.id || (orderData.id + "").startsWith('order_fake')) {
+        console.warn("Invalid order data:", orderData);
+        if ((orderData.id + "").startsWith('order_fake')) {
+          alert("Payment Error: Invalid API Keys on server. Please use COD.");
+        } else {
+          alert("Failed to initialize payment. Please try again.");
+        }
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        return;
+      }
+
+      const options = {
+        "key": rzpKey,
+        "amount": orderData.amount,
+        "currency": "INR",
+        "name": "Menz",
+        "description": "Purchase",
+        "order_id": orderData.id,
+        "handler": function (response) {
+          // Submit form with payment details
+          const form = document.getElementById('mainCheckoutForm');
+
+          const addHidden = (n, v) => {
+            let i = document.createElement('input');
+            i.type = 'hidden';
+            i.name = n;
+            i.value = v;
+            form.appendChild(i);
+          }
+          addHidden('razorpay_payment_id', response.razorpay_payment_id);
+          addHidden('razorpay_order_id', response.razorpay_order_id);
+          addHidden('razorpay_signature', response.razorpay_signature);
+
+          form.submit();
+        },
+        "prefill": {
+          "name": formData.get('full_name'),
+          "contact": formData.get('phone'),
+          "email": formData.get('email')
+        },
+        "theme": {
+          "color": "#f5f200"
+        },
+        "modal": {
+          "ondismiss": function () {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }
+        }
+      };
+
+      var rzp1 = new Razorpay(options);
+      rzp1.on('payment.failed', function (response) {
+        alert("Payment Failed: " + response.error.description);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      });
+      rzp1.open();
+
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  });
+</script>
+{% endblock %}

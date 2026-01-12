@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Shipments</title>
+</head>
+<body>
+  <h1>Shipments</h1>
+  <p><a href="/admin/shipments/create">Create shipment</a></p>
+  <h2>Created Shipments</h2>
+  <ul>
+    {% for s in shipments %}
+      <li>{{ s.shiprocket_order_id }} - saved at {{ s.created_at }}</li>
+    {% else %}
+      <li>No shipments found</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Recent Webhooks</h2>
+  <ul>
+    {% for w in webhooks %}
+      <li>{{ w.received_at }} - {{ w.shiprocket_webhook | safe }}</li>
+    {% else %}
+      <li>No webhooks yet</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Products{% endblock %}
+{% block content %}
+<style>
+  /* ===== ADMIN PRODUCTS PAGE ===== */
+
+body{
+    background:#0b0b0b;
+    color:#ffffff;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* Page title */
+h1{
+    text-align:center;
+    margin:30px 0 16px;
+    color:#f5f200;
+    letter-spacing:2px;
+}
+
+/* Add Product button */
+a.btn{
+    display:inline-block;
+    margin:0 auto 20px;
+    background:#f5f200;
+    color:#000;
+    padding:12px 26px;
+    border-radius:30px;
+    font-weight:700;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+a.btn:hover{
+    background:#e6dc00;
+    box-shadow:0 8px 18px rgba(0,0,0,0.35);
+}
+
+/* Table */
+.admin-table{
+    width:90%;
+    max-width:1000px;
+    margin:0 auto 80px;
+    border-collapse:collapse;
+    background:#111111;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,0.55);
+}
+
+/* Table header */
+.admin-table thead{
+    background:#0b0b0b;
+}
+
+.admin-table th{
+    padding:16px 14px;
+    text-align:left;
+    color:#f5f200;
+    font-size:14px;
+    font-weight:700;
+    border-bottom:1px solid #333;
+}
+
+/* Table body */
+.admin-table td{
+    padding:14px;
+    font-size:14px;
+    color:#ffffff;
+    border-bottom:1px solid #222;
+}
+
+/* Row hover */
+.admin-table tbody tr:hover{
+    background:#151515;
+}
+
+/* Price highlight */
+.admin-table td:nth-child(2){
+    color:#f5f200;
+    font-weight:700;
+}
+
+/* Actions */
+.admin-table td:last-child{
+    text-align:right;
+}
+
+/* Delete button */
+button.danger{
+    background:#ff3b3b;
+    color:#ffffff;
+    border:none;
+    padding:8px 18px;
+    border-radius:20px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+/* Delete hover */
+button.danger:hover{
+    background:#e12828;
+    box-shadow:0 6px 16px rgba(0,0,0,0.35);
+}
+
+/* Mobile responsive */
+@media(max-width:700px){
+    .admin-table{
+        width:100%;
+        font-size:13px;
+    }
+
+    .admin-table th,
+    .admin-table td{
+        padding:12px 10px;
+    }
+
+    a.btn{
+        margin-left:20px;
+    }
+}
+
+</style>
+<h1>Products</h1>
+<a class="btn" href="{{ url_for('admin_add_product') }}">Add Product</a>
+<table class="admin-table">
+  <thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for p in products %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>₹{{ p.price }}</td>
+        <td>{{ p.category }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_delete_product', product_id=p._id) }}" style="display:inline">
+            <button class="danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

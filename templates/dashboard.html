@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% block title %}Admin Control Center{% endblock %}
+
+{% block head_extra %}
+<style>
+  /* Admin Layout Grid */
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    margin: 40px 0;
+    min-height: 80vh;
+  }
+
+  /* Sidebar Navigation */
+  .admin-sidebar {
+    background: #111;
+    border-radius: 12px;
+    padding: 20px;
+    align-self: start;
+    border: 1px solid #333;
+  }
+
+  .sidebar-header {
+    font-size: 1.2rem;
+    color: #888;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav-item {
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .nav-item:hover,
+  .nav-item.active {
+    background: var(--accent-color, #f5f200);
+    color: #000;
+    font-weight: 600;
+  }
+
+  /* Main Content Area */
+  .dashboard-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .welcome-header h1 {
+    font-size: 3rem;
+    color: var(--accent-color, #f5f200);
+    margin: 0;
+    letter-spacing: -1px;
+  }
+
+  .welcome-header p {
+    color: #888;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .stat-card {
+    background: #151515;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-color, #f5f200);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Quick Actions */
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .action-card {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+
+  .action-card:hover {
+    border-color: var(--accent-color, #f5f200);
+    transform: translateY(-5px);
+  }
+
+  .action-icon {
+    width: 50px;
+    height: 50px;
+    background: #222;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--accent-color, #f5f200);
+  }
+
+  .action-info h3 {
+    color: #fff;
+    margin: 0 0 4px;
+    font-size: 1.2rem;
+  }
+
+  .action-info span {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  @media(max-width: 900px) {
+    .admin-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .admin-nav {
+      flex-direction: row;
+    }
+
+    .nav-item {
+      white-space: nowrap;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container admin-layout">
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">Navigation</div>
+    <nav class="admin-nav">
+      <a href="{{ url_for('admin_dashboard') }}" class="nav-item active">
+        <span>Dashboard</span> <span>●</span>
+      </a>
+      <a href="{{ url_for('admin_products') }}" class="nav-item">
+        <span>Products</span>
+      </a>
+      <a href="{{ url_for('admin_banners') }}" class="nav-item">
+        <span>Banners</span>
+      </a>
+      <a href="{{ url_for('admin_social_links') }}" class="nav-item">
+        <span>Social Links</span>
+      </a>
+      <a href="{{ url_for('admin_users') }}" class="nav-item">
+        <span>Users</span>
+      </a>
+  </aside>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<main class="dashboard-content">
+  <header class="welcome-header">
+    <h1>Overview</h1>
+    <p>Welcome back, Admin. Here is what is happening today.</p>
+  </header>
+
+  <!-- Stats -->
+  <section class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Users</div>
+      <div class="stat-value">{{ counts.users }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Products</div>
+      <div class="stat-value">{{ counts.products }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-value">{{ counts.orders }}</div>
+    </div>
+  </section>
+
+  <!-- Quick Actions -->
+  <section>
+    <h3 style="color:#fff; margin-bottom:20px; font-size:1.5rem;">Quick Actions</h3>
+    <div class="actions-grid">
+      <a href="{{ url_for('admin_add_product') }}" class="action-card">
+        <div class="action-icon">+</div>
+        <div class="action-info">
+          <h3>Add Product</h3>
+          <span>Create new inventory item</span>
+        </div>
+      </a>
+
+      <a href="{{ url_for('admin_products') }}" class="action-card">
+        <div class="action-icon">📦</div>
+        <div class="action-info">
+          <h3>Manage Inventory</h3>
+          <span>Edit prices or remove items</span>
+        </div>
+      </a>
+
+      <a href="{{ url_for('admin_banners') }}" class="action-card">
+        <div class="action-icon">🖼️</div>
+        <div class="action-info">
+          <h3>Update Banners</h3>
+          <span>Change homepage visuals</span>
+        </div>
+      </a>
+
+      <a href="{{ url_for('admin_shipments') }}" class="action-card">
+        <div class="action-icon">🚚</div>
+        <div class="action-info">
+          <h3>Shipments</h3>
+          <span>Track shiprocket orders</span>
+        </div>
+      </a>
+    </div>
+  </section>
+</main>
+</div>
+{% endblock %}

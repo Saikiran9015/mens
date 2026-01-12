@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Add Product{% endblock %}
+{% block head_extra %}
+<style>
+/* ===== ADMIN ADD PRODUCT PAGE ===== */
+
+body{
+    background:#0b0b0b;
+    color:#ffffff;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* Page title */
+h1{
+    text-align:center;
+    margin:30px 0;
+    color:#f5f200;
+    letter-spacing:2px;
+}
+
+/* Form container */
+form{
+    max-width:520px;
+    margin:0 auto 60px;
+    background:#111111;
+    padding:30px 28px;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Labels */
+form label{
+    display:block;
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:18px;
+    color:#cccccc;
+}
+
+/* Inputs & textarea */
+form input[type="text"],
+form input[type="number"],
+form textarea{
+    width:100%;
+    margin-top:6px;
+    padding:12px 14px;
+    border-radius:8px;
+    border:1px solid #333;
+    background:#0b0b0b;
+    color:#ffffff;
+    font-size:14px;
+    outline:none;
+    transition:0.3s;
+}
+
+/* File input */
+form input[type="file"]{
+    margin-top:8px;
+    color:#cccccc;
+}
+
+/* Focus effect */
+form input:focus,
+form textarea:focus{
+    border-color:#f5f200;
+    box-shadow:0 0 0 2px rgba(245,242,0,0.15);
+}
+
+/* Textarea */
+form textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+/* Submit button */
+form button{
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    border-radius:30px;
+    border:none;
+    background:#f5f200;
+    color:#000000;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+/* Hover effect */
+form button:hover{
+    background:#e6dc00;
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,0.35);
+}
+
+/* Mobile responsive */
+@media(max-width:600px){
+    form{
+        margin:20px;
+        padding:24px 20px;
+    }
+}
+</style>
+{% endblock %}
+{% block content %}
+<style>
+  /* ===== ADMIN ADD PRODUCT PAGE ===== */
+
+body{
+    background:#0b0b0b;
+    color:#ffffff;
+    font-family:'Segoe UI',sans-serif;
+}
+
+/* Page title */
+h1{
+    text-align:center;
+    margin:30px 0;
+    color:#f5f200;
+    letter-spacing:2px;
+}
+
+/* Form container */
+form{
+    max-width:520px;
+    margin:0 auto 60px;
+    background:#111111;
+    padding:30px 28px;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Labels */
+form label{
+    display:block;
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:18px;
+    color:#cccccc;
+}
+
+/* Inputs & textarea */
+form input[type="text"],
+form input[type="number"],
+form textarea{
+    width:100%;
+    margin-top:6px;
+    padding:12px 14px;
+    border-radius:8px;
+    border:1px solid #333;
+    background:#0b0b0b;
+    color:#ffffff;
+    font-size:14px;
+    outline:none;
+    transition:0.3s;
+}
+
+/* File input */
+form input[type="file"]{
+    margin-top:8px;
+    color:#cccccc;
+}
+
+/* Focus effect */
+form input:focus,
+form textarea:focus{
+    border-color:#f5f200;
+    box-shadow:0 0 0 2px rgba(245,242,0,0.15);
+}
+
+/* Textarea */
+form textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+/* Submit button */
+form button{
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    border-radius:30px;
+    border:none;
+    background:#f5f200;
+    color:#000000;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+/* Hover effect */
+form button:hover{
+    background:#e6dc00;
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,0.35);
+}
+
+/* Mobile responsive */
+@media(max-width:600px){
+    form{
+        margin:20px;
+        padding:24px 20px;
+    }
+}
+
+</style>
+<h1>Add Product</h1>
+<form action="{{ url_for('admin_add_product') }}" method="post" enctype="multipart/form-data">
+  <label>Name: <input type="text" name="name" required></label>
+  <label>Price: <input type="number" name="price" required></label>
+  <label>Old Price: <input type="number" name="old_price"></label>
+  <label>Category: <input type="text" name="category"></label>
+  <label>Description: <textarea name="description"></textarea></label>
+  <label>Image: <input type="file" name="image" accept="image/*"></label>
+  <button type="submit">Create</button>
+</form>
+{% endblock %}

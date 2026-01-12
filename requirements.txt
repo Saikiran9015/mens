@@ -1,0 +1,8 @@
+Flask>=2.0
+pymongo>=4.0
+python-dotenv
+pillow
+razorpay
+
+boto3
+requests

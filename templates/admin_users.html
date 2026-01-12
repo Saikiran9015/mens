@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Admin — Users{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='admin_users.css') }}">
+{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Manage Users</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for cat, msg in messages %}
+            <div class="flash {{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div style="max-width:720px;margin:0 auto 40px">
+      <form action="{{ url_for('admin_users') }}" method="post">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <input name="name" placeholder="Full name" required>
+          <input name="email" placeholder="Email" type="email" required>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <input name="password" placeholder="Password" type="password" required>
+          <select name="role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <button class="btn-main" type="submit">Create User</button>
+      </form>
+    </div>
+
+    <div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.06)">
+            <th style="padding:12px">Name</th>
+            <th style="padding:12px">Email</th>
+            <th style="padding:12px">Role</th>
+            <th style="padding:12px">Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.03)">
+            <td style="padding:12px">{{ u.name or '-' }}</td>
+            <td style="padding:12px">{{ u.email }}</td>
+            <td style="padding:12px">{{ u.role or 'user' }}</td>
+            <td style="padding:12px">{{ u.created_at if u.created_at else '-' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

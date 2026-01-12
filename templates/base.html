@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}MENZ{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* ================= RESET & BASE ================= */
+        :root {
+            --bg-color: #0b0b0b;
+            --text-color: #ffffff;
+            --accent-color: #f5f200;
+            --gray-dark: #111;
+            --gray-light: #444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ================= HEADER LAYOUT ================= */
+        .site-header {
+            width: 100%;
+            background: rgba(11, 11, 11, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-inner {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 1. LOGO */
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-color);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            z-index: 1002;
+            margin-right: 20px;
+        }
+
+        /* 2. SEARCH (DESKTOP) */
+        .desktop-search {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-input-group {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #666;
+            transition: 0.3s;
+        }
+
+        .search-input-group:focus-within {
+            border-color: var(--accent-color);
+        }
+
+        #searchInput {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px 0;
+            font-size: 15px;
+            outline: none;
+            text-align: center;
+        }
+
+        #searchInput::placeholder {
+            color: #888;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .search-btn-icon {
+            background: none;
+            border: none;
+            color: #fff;
+            padding: 0 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* 3. RIGHT ACTIONS */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 1002;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Buttons */
+        .btn-header {
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-btn {
+            background: var(--accent-color);
+            color: #000;
+            padding: 8px 24px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .map-btn:hover {
+            background: #fff;
+        }
+
+        .login-btn {
+            color: #fff;
+            padding: 8px 16px;
+            border: 1px solid #444;
+            border-radius: 6px;
+        }
+
+        .login-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .icon-btn {
+            font-size: 20px;
+            color: #fff;
+            padding: 4px;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1);
+            color: var(--accent-color);
+        }
+
+        /* MOBILE TOGGLE */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* MOBILE SEARCH ROW (Hidden on Desktop) */
+        .mobile-search-row {
+            display: none;
+            padding-bottom: 12px;
+        }
+
+        .mobile-search-form {
+            display: flex;
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        .mobile-search-form input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            outline: none;
+        }
+
+        .mobile-search-form button {
+            background: none;
+            border: none;
+            color: #888;
+        }
+
+        /* NAV DRAWER (Mobile Menu) */
+        .nav-drawer {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: #0b0b0b;
+            border-bottom: 1px solid #222;
+            max-height: 0;
+            overflow: hidden;
+            transition: 0.3s ease-in-out;
+            z-index: 999;
+        }
+
+        .nav-drawer.open {
+            max-height: 400px;
+            padding-bottom: 20px;
+        }
+
+        .nav-inner {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 16px;
+        }
+
+        .nav-inner a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 12px;
+        }
+
+        .nav-label {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .desktop-search {
+                display: none;
+            }
+
+            .mobile-search-row {
+                display: block;
+            }
+
+            .mobile-toggle {
+                display: block;
+                margin-left: 12px;
+            }
+
+            /* Hide some desktop specific buttons if needed, usually we keep Cart/Login icon visible */
+            .desktop-only {
+                display: none;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #searchInput {
+                width: 100%;
+            }
+        }
+    </style>
+    {% block head_extra %}{% endblock %}
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <!-- 1. LEFT: LOGO -->
+            <a href="{{ url_for('landing') }}" class="logo">Menz</a>
+
+            <!-- 2. CENTER: SEARCH (Hidden on Mobile initially or moved) -->
+            <div class="search-wrapper desktop-search">
+                <form id="searchForm" action="{{ url_for('shopping') }}" method="get" role="search">
+                    <div class="search-input-group">
+                        <input type="search" id="searchInput" name="q" placeholder="Search" autocomplete="off"
+                            value="{{ q|default('') }}">
+                        <button type="submit" class="search-btn-icon">🔍</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 3. RIGHT: ACTIONS + MOBILE TOGGLE -->
+            <div class="header-right">
+                <div class="header-actions">
+                    <!-- Shop Button (Visible on Desktop) -->
+                    <a href="{{ url_for('shopping') }}" class="btn-header map-btn desktop-only">Shop</a>
+
+
+                    <!-- Login/Auth -->
+                    {% if session.get('user_id') %}
+                    <!-- If user is admin -->
+                    {% if session.get('role') == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn-header map-btn desktop-only"
+                        style="background:#222; border:1px solid #444; color:#fff; font-size:12px;">ADMIN PANEL</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="btn-header login-btn">Logout</a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn-header login-btn">Login</a>
+                    {% endif %}
+                </div>
+
+                <!-- HAMBURGER (Mobile Only) -->
+                <button class="mobile-toggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Menu">
+                    ☰
+                </button>
+            </div>
+        </div>
+
+        <!-- MOBILE SEARCH ROW (Visible < 900px) -->
+        <div class="container mobile-search-row">
+            <form action="{{ url_for('shopping') }}" method="get" class="mobile-search-form">
+                <input type="search" name="q" placeholder="Search products..." value="{{ q|default('') }}">
+                <button type="submit">🔍</button>
+            </form>
+        </div>
+
+        <!-- NAVIGATION DRAWER (Mobile) -->
+        <nav id="primaryNav" class="nav-drawer">
+            <div class="nav-inner">
+                <a href="{{ url_for('shopping') }}">Shop All</a>
+                <a href="{{ url_for('gifting') }}">Gifting</a>
+                <a href="{{ url_for('about') }}">About Us</a>
+                {% if session.get('role') == 'admin' %}
+                <hr>
+                <span class="nav-label">Admin Controls</span>
+                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('admin_banners') }}">Banners</a>
+                <a href="{{ url_for('admin_products') }}">Products</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, msg in messages %}
+            <li class="flash {{ category }}">{{ msg }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <div class="container"></div>
+    </footer>
+    <script>
+        (() => {
+            const toggle = document.querySelector('.mobile-toggle');
+            const nav = document.getElementById('primaryNav');
+
+            if (toggle && nav) {
+                toggle.addEventListener('click', () => {
+                    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+                    toggle.setAttribute('aria-expanded', String(!expanded));
+                    nav.classList.toggle('open');
+                });
+
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth > 768) {
+                        nav.classList.remove('open');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!nav.contains(e.target) && !toggle.contains(e.target) && nav.classList.contains('open')) {
+                        nav.classList.remove('open');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

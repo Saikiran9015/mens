@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — Menz{% endblock %}
+
+{% block head_extra %}
+<style>
+  .product-page-container {
+    padding: 60px 0;
+    min-height: 80vh;
+  }
+
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  /* Gallery Section */
+  .gallery-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .main-image-frame {
+    width: 100%;
+    aspect-ratio: 4/5;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #222;
+    position: relative;
+  }
+
+  .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.3s;
+  }
+
+  .thumbnails {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+
+  .thumb {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.2s;
+    flex-shrink: 0;
+  }
+
+  .thumb:hover,
+  .thumb.active {
+    border-color: var(--accent-color, #f5f200);
+    opacity: 0.8;
+  }
+
+  /* Product Info Section */
+  .info-container {
+    padding: 10px;
+  }
+
+  .product-category {
+    color: #888;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .product-title {
+    font-size: 3rem;
+    color: #fff;
+    margin: 0 0 15px 0;
+    line-height: 1.1;
+  }
+
+  .product-price {
+    font-size: 2rem;
+    color: var(--accent-color, #f5f200);
+    font-weight: 700;
+    margin-bottom: 30px;
+    display: inline-block;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: #333;
+    margin: 0 0 30px 0;
+    width: 100%;
+  }
+
+  .product-desc {
+    color: #ccc;
+    line-height: 1.6;
+    font-size: 1.05rem;
+    margin-bottom: 40px;
+  }
+
+  /* Controls */
+  .controls-wrapper {
+    background: #111;
+    border: 1px solid #222;
+    padding: 24px;
+    border-radius: 12px;
+  }
+
+  .qty-select {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .qty-label {
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .qty-input {
+    background: #000;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    width: 70px;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+  }
+
+  .btn-cart {
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+  }
+
+  .btn-cart:hover {
+    background: #fff;
+    color: #000;
+  }
+
+  .btn-buy {
+    background: var(--accent-color, #f5f200);
+    border: 2px solid var(--accent-color, #f5f200);
+    color: #000;
+  }
+
+  .btn-buy:hover {
+    background: #d4d100;
+    border-color: #d4d100;
+  }
+
+  /* Size selector mock */
+  .size-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .size-box {
+    width: 45px;
+    height: 45px;
+    border: 1px solid #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #aaa;
+    border-radius: 6px;
+  }
+
+  .size-box:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+
+  .size-box.selected {
+    border-color: var(--accent-color, #f5f200);
+    color: var(--accent-color, #f5f200);
+    font-weight: bold;
+  }
+
+  /* Features */
+  .features-list {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  .feature-icon {
+    color: var(--accent-color, #f5f200);
+  }
+
+
+  @media(max-width: 900px) {
+    .product-layout {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .product-title {
+      font-size: 2rem;
+    }
+
+    .main-image-frame {
+      aspect-ratio: 1;
+    }
+
+    /* square on mobile */
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container product-page-container">
+  <div class="product-layout">
+
+    <!-- Left: Image Gallery -->
+    <div class="gallery-container">
+      <div class="main-image-frame">
+        <img id="mainImage"
+          src="{{ product.images[0] if product.images else url_for('static', filename='no_image.png') }}"
+          class="main-image" alt="{{ product.name }}">
+      </div>
+      {% if product.images|length > 1 %}
+      <div class="thumbnails">
+        {% for im in product.images %}
+        <img src="{{ im }}" class="thumb {% if loop.first %}active{% endif %}" onclick="changeImage(this, '{{ im }}')">
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right: Details -->
+    <div class="info-container">
+      <div class="product-category">{{ product.category or 'Collection' }} / {{ product.name }}</div>
+      <h1 class="product-title">{{ product.name }}</h1>
+      <div class="product-price">₹{{ product.price }}</div>
+
+      <div class="section-divider"></div>
+
+      <p class="product-desc">
+        {{ product.description or 'Experience premium quality and style with this exclusive piece from Menz. Designed
+        for the modern individual who values comfort and aesthetics.' }}
+      </p>
+
+      <form action="{{ url_for('add_to_cart', product_id=product._id) }}" method="post" class="controls-wrapper">
+        <!-- Size Selector (Visual Mockup - Pass hidden 'size' if backend supported it fully, defaulting to 'M') -->
+        <div style="margin-bottom:10px; font-weight:600;">Select Size</div>
+        <div class="size-options">
+          <div class="size-box">S</div>
+          <div class="size-box selected">M</div>
+          <div class="size-box">L</div>
+          <div class="size-box">XL</div>
+        </div>
+        <!-- Hidden input for size, backend logic can capture this -->
+        <input type="hidden" name="size" value="M">
+
+        <div class="qty-select">
+          <span class="qty-label">Quantity:</span>
+          <input type="number" name="qty" value="1" min="1" max="10" class="qty-input">
+        </div>
+
+        <div class="btn-group">
+          <button class="action-btn btn-cart" type="submit">Add to Cart</button>
+          <!-- Buy Now: Links directly to checkout with this product ID -->
+          <a href="{{ url_for('checkout') }}?product_id={{ product._id }}" class="action-btn btn-buy">Buy Now</a>
+        </div>
+      </form>
+
+      <div class="features-list">
+        <div class="feature-item"><span class="feature-icon">✓</span> Premium Quality Material</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> Free Shipping across India</div>
+        <div class="feature-item"><span class="feature-icon">✓</span> 7-Day Easy Returns</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function changeImage(el, src) {
+    document.getElementById('mainImage').src = src;
+    // visual active state
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pay</title>
+</head>
+<body>
+  <h1>Razorpay Payment</h1>
+  {% if product %}
+    <h2>{{ product.name }}</h2>
+    <p>Price: ₹{{ product.price }}</p>
+  {% endif %}
+  {% if order %}
+    <p>Order ID: {{ order.id }}</p>
+    <p>Amount: {{ (order.amount / 100) if order.amount else '0' }} ₹</p>
+    <form id="rzp-form" method="POST" action="/verify-payment">
+      <input type="hidden" name="order_id" value="{{ order.id }}">
+      <input type="hidden" name="amount" value="{{ order.amount }}">
+      <button type="submit">Simulate verify (server-side)</button>
+    </form>
+    <p>If Razorpay is configured, embed the checkout on the client side using the provided razorpay key.</p>
+  {% else %}
+    <form method="POST">
+      <label>Amount (in paise for INR): <input name="amount" type="number" value="10000"></label>
+      <button type="submit">Create Order</button>
+    </form>
+  {% endif %}
+</body>
+</html>

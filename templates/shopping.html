@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% block title %}Shop Collection — Menz{% endblock %}
+
+{% block head_extra %}
+<style>
+  /* Page specific styles */
+  .page-header {
+    padding: 60px 0 40px;
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 3rem;
+    color: var(--accent-color, #f5f200);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .page-subtitle {
+    color: #888;
+    font-size: 1.1rem;
+  }
+
+  /* Grid System */
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 30px;
+    margin-bottom: 80px;
+  }
+
+  /* Product Card */
+  .product-card {
+    background: #111;
+    /* fallback */
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color, #f5f200);
+  }
+
+  /* Fixed Aspect Ratio Image Area */
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 120%;
+    /* 4:5 Aspect Ratio for fashion items */
+    overflow: hidden;
+    background: #000;
+    display: block;
+  }
+
+  .card-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .product-card:hover .card-img {
+    transform: scale(1.05);
+  }
+
+  .card-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .product-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-color, #f5f200);
+    margin-bottom: 16px;
+  }
+
+  .card-actions {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .btn-card {
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-outline {
+    border: 1px solid #555;
+    color: #fff;
+    background: transparent;
+  }
+
+  .btn-outline:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-solid {
+    background: var(--accent-color, #f5f200);
+    color: #000;
+    border: 1px solid var(--accent-color, #f5f200);
+  }
+
+  .btn-solid:hover {
+    background: #fff;
+    border-color: #fff;
+  }
+
+  /* Responsive adjustments */
+  @media(max-width: 600px) {
+    .page-header {
+      padding: 40px 0 20px;
+    }
+
+    .shop-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .card-content {
+      padding: 12px;
+    }
+
+    .product-title {
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-price {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .card-actions {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .btn-card {
+      font-size: 0.8rem;
+      padding: 6px 0;
+    }
+
+    .card-image-wrapper {
+      padding-top: 100%;
+      /* Square on mobile for compactness? Or keep 4:5. Let's keep 4:5 */
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <header class="page-header">
+    <h1 class="page-title">Shop</h1>
+    {% if q %}
+    <p class="page-subtitle">Results for "<strong style="color:#fff">{{ q }}</strong>" — {{ products|length }} items</p>
+    <a href="{{ url_for('shopping') }}"
+      style="display:inline-block; margin-top:20px; color:#666; font-size:14px; text-decoration:underline;">Clear
+      Search</a>
+    {% else %}
+    <p class="page-subtitle">Discover the latest in mens fashion.</p>
+    {% endif %}
+  </header>
+
+  {% if products %}
+  <div class="shop-grid">
+    {% for p in products %}
+    <div class="product-card">
+      <!-- Image Area -->
+      <a href="{{ url_for('product_page', product_id=p._id) }}" class="card-image-wrapper">
+        {% if p.image_filename %}
+        <img src="{{ url_for('uploaded_file', filename=p.image_filename) }}" alt="{{ p.name }}" class="card-img"
+          loading="lazy">
+        {% else %}
+        <img src="{{ url_for('static', filename='no_image.png') }}" alt="{{ p.name }}" class="card-img" loading="lazy">
+        {% endif %}
+      </a>
+
+      <div class="card-content">
+        <a href="{{ url_for('product_page', product_id=p._id) }}" class="product-title">
+          {{ p.name }}
+        </a>
+        <div class="product-price">₹{{ p.price }}</div>
+
+        <!-- Action Buttons: Avoid nested 'a' tags by ensuring this div is a sibling to links, not child -->
+        <div class="card-actions">
+          <a href="{{ url_for('product_page', product_id=p._id) }}" class="btn-card btn-outline">View</a>
+          <a href="{{ url_for('checkout') }}?product_id={{ p._id }}" class="btn-card btn-solid">Buy Now</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center; padding: 100px 20px; color: #666;">
+    <h3 style="font-size:24px; color:#fff; margin-bottom:10px;">No products found</h3>
+    <p>Try adjusting your search or browse our full collection.</p>
+    <a href="{{ url_for('shopping') }}" class="btn-card btn-solid" style="max-width:200px; margin:20px auto;">View All
+      Products</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
